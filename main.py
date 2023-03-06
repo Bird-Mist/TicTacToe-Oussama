@@ -1,7 +1,7 @@
 import pygame
 from Board import Board
-from Board import Player_AI
-from Board import Player_AI_Q_Learning
+from Player_AI import Player_AI
+from Player_AI_Q_Learning import Player_AI_Q_Learning
 import time
 
 
@@ -15,13 +15,13 @@ size= (700, 500)
 screen=pygame.display.set_mode(size)
 board=Board(screen,3)
 
-episodes = 100
-epsilon = 0.9
-reduction = epsilon / 1000
+episodes = 10000000
+epsilon = 1
+reduction = epsilon / episodes
 
 player1=Player_AI(player_char='X')
 player1.is_myturn = 1
-player2=Player_AI_Q_Learning(table='Q_Table.npy',player_char='O', epsilon=epsilon, reduction=reduction)
+player2=Player_AI_Q_Learning(table= 'Q_table.npy', player_char='O', epsilon=epsilon, reduction=reduction)
 
 pygame.display.set_caption('Tic Tac Toe')
 carryOn= True
@@ -43,16 +43,22 @@ while episode < episodes:
     winner = 0
     while not board.checkWinConditions() and len(board.playable_Moves()) > 0:
         screen.fill(WHITE)
-        player1.play_move(board)
+        #time.sleep(1)
+
+        previous_state = player2.get_state_position(board)
+        reward, done, action = player1.play_move(board, player2.player_char)
+        if(action != False):
+            player2.update_Q_table(board, action, reward, previous_state)
+
         player2.play_move(board)
-        board.drawBoard()
-        pygame.display.flip()
+        #board.drawBoard()
+        #pygame.display.flip()
 
         # switch turns
         player1.is_myturn = not player1.is_myturn
         player2.is_myturn = not player2.is_myturn
 
-        clock.tick(60)
+        #clock.tick(60)
 
     winner = board.checkWinConditions()
 
@@ -63,7 +69,7 @@ while episode < episodes:
     episode+=1
 
 print(score)
-#player2.save_Q_table('Q_table.npy')
+player2.save_Q_table('Q_table.npy')
 pygame.quit()
 
 print('Agent win percentage: ',score['O']/episodes)
