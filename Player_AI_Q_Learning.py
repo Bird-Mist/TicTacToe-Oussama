@@ -26,6 +26,8 @@ class Player_AI_Q_Learning():
                 move = np.argmax( self.Q_table[tuple(self.get_state_position(board))] )
                 row = int(move / 3)
                 column = move % 3
+                #print("GREEDY MOVE: ",move)
+                #print("GREEDY MOVE POSITION: ", (row,column)  )
                 reward, done = board.play_move(self.player_char, (row,column), agent_char=self.player_char)
                 self.update_Q_table(board, move, reward, previous_state)
                 return reward, done
@@ -36,11 +38,16 @@ class Player_AI_Q_Learning():
                 if len(playable_moves) > 0:
                     move = random.randint(0, len(playable_moves) - 1)
                     move_position = playable_moves[move]
+                    #print("RANDOM MOVE: ", move)
+                    #print("RANDOM POSITION: ", move_position)
                     reward, done = board.play_move(self.player_char, move_position, agent_char=self.player_char)
-                    self.update_Q_table(board, move, reward, previous_state)
+                    self.update_Q_table(board, (move_position[0]*board.nbrCells) + move_position[1], reward, previous_state)
                     return reward, done
 
             self.epsilon -= self.reduction
+
+        else:
+            return False, False
 
 
     """

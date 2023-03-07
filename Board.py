@@ -95,17 +95,17 @@ class Board:
     def play_move(self, player_char, position, agent_char):
         reward = 0
 
+        if self.grid[position] != 'empty':
+            reward = -9999
+        else:
+            self.grid[position] = player_char
+
         winning_character = self.checkWinConditions()
         if winning_character:
             if winning_character == agent_char:
                 reward = 1
             else:
                 reward = -1
-
-        if self.grid[position] != 'empty':
-            reward = -9999
-        else:
-            self.grid[position] = player_char
 
         return reward, winning_character
 
