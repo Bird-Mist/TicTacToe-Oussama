@@ -1,0 +1,58 @@
+import pygame
+
+class Player_Human():
+
+    def __init__(self, player_char):
+        self.player_char = player_char
+        self.is_myturn = 0
+
+    def play_move(self, board):
+        if self.is_myturn:
+            rewards = {'O': 0, 'X':0}
+            done = False
+            action = False
+            played_move = False
+            while not played_move:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_1:
+                            rewards, done = board.play_move(self.player_char, (0,0 ))
+                            action = 0
+                            played_move = True
+                        if event.key == pygame.K_2:
+                            rewards, done = board.play_move(self.player_char, (0,1 ))
+                            action = 1
+                            played_move = True
+                        if event.key == pygame.K_3:
+                            rewards, done = board.play_move(self.player_char, (0,2 ))
+                            action = 2
+                            played_move = True
+                        if event.key == pygame.K_4:
+                            rewards, done = board.play_move(self.player_char, (1,0 ))
+                            action = 3
+                            played_move = True
+                        if event.key == pygame.K_5:
+                            rewards, done = board.play_move(self.player_char, (1,1 ))
+                            action = 4
+                            played_move = True
+                        if event.key == pygame.K_6:
+                            rewards, done = board.play_move(self.player_char, (1,2 ))
+                            action = 5
+                            played_move = True
+                        if event.key == pygame.K_7:
+                            rewards, done = board.play_move(self.player_char, (2,0 ))
+                            action = 6
+                            played_move = True
+                        if event.key == pygame.K_8:
+                            rewards, done = board.play_move(self.player_char, (2,1 ))
+                            action = 7
+                            played_move = True
+                        if event.key == pygame.K_9:
+                            rewards, done = board.play_move(self.player_char, (2,2 ))
+                            action = 8
+                            played_move = True
+
+            return rewards, done, action
+
+        else:
+            return False, False, False

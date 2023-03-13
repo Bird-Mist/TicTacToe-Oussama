@@ -3,7 +3,7 @@ import random
 
 class Player_AI_Q_Learning():
 
-    def __init__(self, player_char, table=None, epsilon=0.9, reduction=0, discount_factor=1, learning_rate=0.4):
+    def __init__(self, player_char, table=None, epsilon=0.9, reduction=0, discount_factor=0.8, learning_rate=0.1):
         self.player_char = player_char
         self.is_myturn=0
         self.epsilon = epsilon
@@ -11,6 +11,8 @@ class Player_AI_Q_Learning():
         self.discount_factor = discount_factor
         self.learning_rate = learning_rate
         self.possible_states = np.array(['empty', 'X', 'O'])
+        self.latest_action = None
+        self.latest_state = [0,0,0,0,0,0,0,0,0]
 
         if table is None:
             self.Q_table= np.zeros((3,3,3,3,3,3,3,3,3,9))
@@ -21,16 +23,17 @@ class Player_AI_Q_Learning():
     def play_move(self, board):
         if self.is_myturn:
             previous_state = self.get_state_position(board)
+            self.latest_state = previous_state
             if random.random() > self.epsilon:
                 # greedy move (exploitation)
+
                 move = np.argmax( self.Q_table[tuple(self.get_state_position(board))] )
+                self.latest_action = move
                 row = int(move / 3)
                 column = move % 3
-                #print("GREEDY MOVE: ",move)
-                #print("GREEDY MOVE POSITION: ", (row,column)  )
-                reward, done = board.play_move(self.player_char, (row,column), agent_char=self.player_char)
-                self.update_Q_table(board, move, reward, previous_state)
-                return reward, done
+                rewards, done = board.play_move(self.player_char, (row,column))
+                self.update_Q_table(board=board, action=move, rewards=rewards, previous_state=previous_state)
+                return rewards, done, move
 
             else:
                 # random move (exploration)
@@ -38,29 +41,16 @@ class Player_AI_Q_Learning():
                 if len(playable_moves) > 0:
                     move = random.randint(0, len(playable_moves) - 1)
                     move_position = playable_moves[move]
-                    #print("RANDOM MOVE: ", move)
-                    #print("RANDOM POSITION: ", move_position)
-                    reward, done = board.play_move(self.player_char, move_position, agent_char=self.player_char)
+                    self.latest_action = (move_position[0]*board.nbrCells) + move_position[1]
+                    reward, done = board.play_move(self.player_char, move_position)
                     self.update_Q_table(board, (move_position[0]*board.nbrCells) + move_position[1], reward, previous_state)
-                    return reward, done
+                    return reward, done, (move_position[0]*board.nbrCells) + move_position[1]
 
             self.epsilon -= self.reduction
 
         else:
-            return False, False
+            return False, False, False
 
-
-    """
-    def play_move(self, board):
-        if self.is_myturn:
-            playable_moves = board.playable_Moves()
-            if len(playable_moves) > 0:
-                move = random.randint( 0 , len(playable_moves)-1 )
-                move_position = playable_moves[ move ]
-                reward, done = board.play_move(self.player_char, move_position)
-                return reward, done
-        print(self.get_state_position(board))
-    """
 
     def get_state_position(self, board):
 
@@ -73,13 +63,23 @@ class Player_AI_Q_Learning():
 
         return positions
 
-    def update_Q_table(self, board, action, reward, previous_state):
+    def update_Q_table(self, board, action, rewards, previous_state):
+        reward = rewards[self.player_char]
+        character = self.player_char
+        state_before = np.copy(self.Q_table[tuple(previous_state)])
+        self.Q_table[tuple(previous_state)][action] += (self.learning_rate * (reward + (self.discount_factor * np.max(self.Q_table[tuple(self.get_state_position(board))])) - self.Q_table[tuple(previous_state)][action]))
+        state_after = np.copy(self.Q_table[tuple(previous_state)])
+        #print()
+    def update_Q_table_last_action(self, board,rewards,previous_state):
+        reward = rewards[self.player_char]
+        state_before = np.copy(self.Q_table[tuple(previous_state)])
+        #print()
+        self.Q_table[tuple(self.latest_state)][self.latest_action] += (self.learning_rate * (
+                    reward + (self.discount_factor * np.max(self.Q_table[tuple(self.get_state_position(board))])) -
+                    self.Q_table[tuple(self.latest_state)][self.latest_action]))
 
-        self.Q_table[tuple(previous_state)][action] += self.learning_rate * (reward + (self.discount_factor *
-                                                 ( np.max(self.Q_table[tuple(self.get_state_position(board))])
-                                                   - self.Q_table[tuple(previous_state)][action]) ) )
-
-
+        state_after = np.copy(self.Q_table[tuple(previous_state)])
+        #print()
     def save_Q_table(self, filename):
         np.save(filename, self.Q_table)
 

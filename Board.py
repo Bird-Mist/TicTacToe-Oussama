@@ -92,25 +92,33 @@ class Board:
         return playable_moves
 
 
-    def play_move(self, player_char, position, agent_char):
-        reward = 0
+    def play_move(self, player_char, position):
+        opponent_char = self.get_opponent_char(player_char)
+        rewards = {player_char: 0, opponent_char: 0}
 
         if self.grid[position] != 'empty':
-            reward = -9999
+            rewards = {player_char: -9999, opponent_char: 0 }
+            return rewards, self.checkWinConditions()
         else:
             self.grid[position] = player_char
 
         winning_character = self.checkWinConditions()
         if winning_character:
-            if winning_character == agent_char:
-                reward = 1
+            if winning_character == player_char:
+                rewards = {player_char: 1, opponent_char: -1}
             else:
-                reward = -1
+                rewards = {player_char: -1, opponent_char: 1}
 
-        return reward, winning_character
+        return rewards, winning_character
 
     def reset(self):
         for x in range( self.nbrCells ):
             for y in range( self.nbrCells ):
                 self.grid[x][y] = 'empty'
 
+
+    def get_opponent_char(self, player_char):
+        if player_char == 'O':
+            return 'X'
+        else:
+            return 'O'
