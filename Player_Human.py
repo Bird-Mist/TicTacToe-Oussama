@@ -1,10 +1,12 @@
 import pygame
+import numpy as np
 
 class Player_Human():
 
     def __init__(self, player_char):
         self.player_char = player_char
         self.is_myturn = 0
+        self.possible_states = np.array(['empty', 'X', 'O'])
 
     def play_move(self, board):
         if self.is_myturn:
@@ -56,3 +58,14 @@ class Player_Human():
 
         else:
             return False, False, False
+
+    def get_state_position(self, board):
+
+        positions = []
+
+        # convert grid into array of dimension access
+        for x in range(board.nbrCells):
+            for y in range(board.nbrCells):
+                positions.append(np.where(self.possible_states == board.grid[x][y])[0][0])
+
+        return positions

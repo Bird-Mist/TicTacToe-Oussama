@@ -16,14 +16,16 @@ size= (700, 500)
 screen=pygame.display.set_mode(size)
 board=Board(screen,3)
 
-episodes = 1000000
-epsilon = 1
+episodes = 4000000
+epsilon = 0
 reduction = epsilon / episodes
 
 player1 = Player_AI_Q_Learning(table='Q_table_X.npy', player_char='X', epsilon=epsilon, reduction=reduction)
 player1.is_myturn = 1
-#player2 = Player_AI_Q_Learning(table='Q_table_O.npy', player_char='O', epsilon=epsilon, reduction=reduction)
-player2 = Player_Human(player_char='O')
+player2 = Player_AI_Q_Learning(table='Q_table_O.npy', player_char='O', epsilon=epsilon, reduction=reduction)
+
+#player2 = Player_Human(player_char = 'O')
+player1= Player_Human(player_char = 'X')
 
 pygame.display.set_caption('Tic Tac Toe')
 carryOn= True
@@ -45,7 +47,7 @@ while episode < episodes:
 
     # -- drawing logic --
     winner = 0
-    while not (board.checkWinConditions() and len(board.playable_Moves()) > 0):
+    while not board.checkWinConditions() and len(board.playable_Moves()) > 0:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 carryOn = False
@@ -54,15 +56,16 @@ while episode < episodes:
         previous_state = player1.get_state_position(board)
         rewards, done, action = player1.play_move(board)
 
+
         if(action != False):
-            #player2.update_Q_table_last_action(board, rewards, previous_state)
-            ...
+            player2.update_Q_table_last_action(board, rewards, previous_state)
 
         rewards, done, action = player2.play_move(board)
 
-
+        """
         if(action != False):
             player1.update_Q_table_last_action(board, rewards, previous_state)
+        """
 
         board.drawBoard()
         pygame.display.flip()
@@ -70,8 +73,8 @@ while episode < episodes:
         # switch turns
         player1.is_myturn = not player1.is_myturn
         player2.is_myturn = not player2.is_myturn
-        time.sleep(0.6)
-        clock.tick(60)
+        #time.sleep(0.6)
+        #clock.tick(60)
 
 
 
