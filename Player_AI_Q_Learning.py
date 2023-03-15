@@ -3,10 +3,11 @@ import random
 
 class Player_AI_Q_Learning():
 
-    def __init__(self, player_char, table=None, epsilon=0.9, reduction=0, discount_factor=0.8, learning_rate=0.1):
+    def __init__(self, player_char, table=None, epsilon=0.9,min_epsilon = 0.2, reduction=0, discount_factor=0.01, learning_rate=0.01):
         self.player_char = player_char
         self.is_myturn=0
         self.epsilon = epsilon
+        self.min_epsilon = min_epsilon
         self.reduction = reduction
         self.discount_factor = discount_factor
         self.learning_rate = learning_rate
@@ -46,7 +47,8 @@ class Player_AI_Q_Learning():
                     self.update_Q_table(board, (move_position[0]*board.nbrCells) + move_position[1], reward, previous_state)
                     return reward, done, (move_position[0]*board.nbrCells) + move_position[1]
 
-            self.epsilon -= self.reduction
+            if self.epsilon > self.min_epsilon:
+                self.epsilon -= self.reduction
 
         else:
             return False, False, False

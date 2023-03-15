@@ -97,7 +97,7 @@ class Board:
         rewards = {player_char: 0, opponent_char: 0}
 
         if self.grid[position] != 'empty':
-            rewards = {player_char: -9999, opponent_char: 0 }
+            rewards = {player_char: -99999999999999, opponent_char: 0 }
             return rewards, self.checkWinConditions()
         else:
             self.grid[position] = player_char

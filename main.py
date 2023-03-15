@@ -16,7 +16,7 @@ size= (700, 500)
 screen=pygame.display.set_mode(size)
 board=Board(screen,3)
 
-episodes = 4000000
+episodes = 100
 epsilon = 0
 reduction = epsilon / episodes
 
@@ -24,8 +24,8 @@ player1 = Player_AI_Q_Learning(table='Q_table_X.npy', player_char='X', epsilon=e
 player1.is_myturn = 1
 player2 = Player_AI_Q_Learning(table='Q_table_O.npy', player_char='O', epsilon=epsilon, reduction=reduction)
 
-#player2 = Player_Human(player_char = 'O')
-player1= Player_Human(player_char = 'X')
+#player1 = Player_Human(player_char='X')
+player2 = Player_Human(player_char='O')
 
 pygame.display.set_caption('Tic Tac Toe')
 carryOn= True
@@ -40,8 +40,8 @@ while episode < episodes:
 
     print(episode)
     if episode % 1000 == 0:
-        #player1.save_Q_table('Q_table_X.npy')
-        #player2.save_Q_table('Q_table_O.npy')
+        player1.save_Q_table('Q_table_X.npy')
+        player2.save_Q_table('Q_table_O.npy')
         print('Model checkpoint saved')
     # -- game logic --
 
@@ -62,10 +62,8 @@ while episode < episodes:
 
         rewards, done, action = player2.play_move(board)
 
-        """
         if(action != False):
             player1.update_Q_table_last_action(board, rewards, previous_state)
-        """
 
         board.drawBoard()
         pygame.display.flip()
@@ -74,7 +72,7 @@ while episode < episodes:
         player1.is_myturn = not player1.is_myturn
         player2.is_myturn = not player2.is_myturn
         #time.sleep(0.6)
-        #clock.tick(60)
+        clock.tick(60)
 
 
 

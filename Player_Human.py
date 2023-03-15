@@ -17,39 +17,39 @@ class Player_Human():
             while not played_move:
                 for event in pygame.event.get():
                     if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_1:
+                        if event.key == pygame.K_KP7:
                             rewards, done = board.play_move(self.player_char, (0,0 ))
                             action = 0
                             played_move = True
-                        if event.key == pygame.K_2:
+                        if event.key == pygame.K_KP8:
                             rewards, done = board.play_move(self.player_char, (0,1 ))
                             action = 1
                             played_move = True
-                        if event.key == pygame.K_3:
+                        if event.key == pygame.K_KP9:
                             rewards, done = board.play_move(self.player_char, (0,2 ))
                             action = 2
                             played_move = True
-                        if event.key == pygame.K_4:
+                        if event.key == pygame.K_KP4:
                             rewards, done = board.play_move(self.player_char, (1,0 ))
                             action = 3
                             played_move = True
-                        if event.key == pygame.K_5:
+                        if event.key == pygame.K_KP5:
                             rewards, done = board.play_move(self.player_char, (1,1 ))
                             action = 4
                             played_move = True
-                        if event.key == pygame.K_6:
+                        if event.key == pygame.K_KP6:
                             rewards, done = board.play_move(self.player_char, (1,2 ))
                             action = 5
                             played_move = True
-                        if event.key == pygame.K_7:
+                        if event.key == pygame.K_KP1:
                             rewards, done = board.play_move(self.player_char, (2,0 ))
                             action = 6
                             played_move = True
-                        if event.key == pygame.K_8:
+                        if event.key == pygame.K_KP2:
                             rewards, done = board.play_move(self.player_char, (2,1 ))
                             action = 7
                             played_move = True
-                        if event.key == pygame.K_9:
+                        if event.key == pygame.K_KP3:
                             rewards, done = board.play_move(self.player_char, (2,2 ))
                             action = 8
                             played_move = True
@@ -69,3 +69,11 @@ class Player_Human():
                 positions.append(np.where(self.possible_states == board.grid[x][y])[0][0])
 
         return positions
+
+    def update_Q_table_last_action(self, board,rewards,previous_state):
+        # dummy function
+        ...
+
+    def save_Q_table(self, filename):
+        #dummy function
+        ...
