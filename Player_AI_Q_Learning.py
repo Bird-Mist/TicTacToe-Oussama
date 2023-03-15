@@ -3,7 +3,7 @@ import random
 
 class Player_AI_Q_Learning():
 
-    def __init__(self, player_char, table=None, epsilon=0.9,min_epsilon = 0.2, reduction=0, discount_factor=0.01, learning_rate=0.01):
+    def __init__(self, player_char, table=None, epsilon=0.9,min_epsilon = 0.2, reduction=0, discount_factor=0.01, learning_rate=0.2):
         self.player_char = player_char
         self.is_myturn=0
         self.epsilon = epsilon
@@ -51,7 +51,7 @@ class Player_AI_Q_Learning():
                 self.epsilon -= self.reduction
 
         else:
-            return False, False, False
+            return None, None, None
 
 
     def get_state_position(self, board):

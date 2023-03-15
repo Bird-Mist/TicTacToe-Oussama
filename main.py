@@ -24,8 +24,8 @@ player1 = Player_AI_Q_Learning(table='Q_table_X.npy', player_char='X', epsilon=e
 player1.is_myturn = 1
 player2 = Player_AI_Q_Learning(table='Q_table_O.npy', player_char='O', epsilon=epsilon, reduction=reduction)
 
-#player1 = Player_Human(player_char='X')
-player2 = Player_Human(player_char='O')
+player1 = Player_Human(player_char='X')
+#player2 = Player_Human(player_char='O')
 
 pygame.display.set_caption('Tic Tac Toe')
 carryOn= True
@@ -39,7 +39,7 @@ score = {'O': 0, 'X':0}
 while episode < episodes:
 
     print(episode)
-    if episode % 1000 == 0:
+    if episode % 1 == 0:
         player1.save_Q_table('Q_table_X.npy')
         player2.save_Q_table('Q_table_O.npy')
         print('Model checkpoint saved')
@@ -57,12 +57,12 @@ while episode < episodes:
         rewards, done, action = player1.play_move(board)
 
 
-        if(action != False):
+        if(action is not None):
             player2.update_Q_table_last_action(board, rewards, previous_state)
 
         rewards, done, action = player2.play_move(board)
 
-        if(action != False):
+        if(action is not None):
             player1.update_Q_table_last_action(board, rewards, previous_state)
 
         board.drawBoard()

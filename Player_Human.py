@@ -11,9 +11,9 @@ class Player_Human():
     def play_move(self, board):
         if self.is_myturn:
             rewards = {'O': 0, 'X':0}
-            done = False
-            action = False
-            played_move = False
+            done = None
+            action = None
+            played_move = None
             while not played_move:
                 for event in pygame.event.get():
                     if event.type == pygame.KEYDOWN:
@@ -57,7 +57,7 @@ class Player_Human():
             return rewards, done, action
 
         else:
-            return False, False, False
+            return None, None, None
 
     def get_state_position(self, board):
 
