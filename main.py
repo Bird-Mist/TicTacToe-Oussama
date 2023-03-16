@@ -16,7 +16,7 @@ size= (700, 500)
 screen=pygame.display.set_mode(size)
 board=Board(screen,3)
 
-episodes = 10000000
+episodes = 10000
 epsilon = 0
 reduction = epsilon / episodes
 
@@ -24,8 +24,8 @@ player1 = Player_AI_Q_Learning(table= 'Q_table_X.npy', player_char='X', epsilon=
 player1.is_myturn = 1
 player2 = Player_AI_Q_Learning(table= 'Q_table_O.npy', player_char='O', epsilon=epsilon, reduction=reduction)
 
-#player1 = Player_Human(player_char='X')
-player2 = Player_Human(player_char='O')
+player1 = Player_Human(player_char='X')
+#player2 = Player_Human(player_char='O')
 
 pygame.display.set_caption('Tic Tac Toe')
 carryOn= True
@@ -75,12 +75,13 @@ while episode < episodes:
 
     if winner:
         score[winner] += 1
-    print(score)
+
     if episode % 2000 == 0:
         player1.save_Q_table('Q_table_X.npy')
         player2.save_Q_table('Q_table_O.npy')
         print('Model checkpoint saved')
         print('Episode: ',episode)
+        print(score)
 
 
     board.reset()
