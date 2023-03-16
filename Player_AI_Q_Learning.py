@@ -16,7 +16,7 @@ class Player_AI_Q_Learning():
         self.latest_state = [0,0,0,0,0,0,0,0,0]
 
         if table is None:
-            self.Q_table= np.zeros((3,3,3,3,3,3,3,3,3,9))
+            self.Q_table= np.ones((3,3,3,3,3,3,3,3,3,9))
         else:
             # code to load table from disk
             self.load_Q_table(table)
@@ -40,12 +40,13 @@ class Player_AI_Q_Learning():
                 # random move (exploration)
                 playable_moves = board.playable_Moves()
                 if len(playable_moves) > 0:
-                    move = random.randint(0, len(playable_moves) - 1)
-                    move_position = playable_moves[move]
-                    self.latest_action = (move_position[0]*board.nbrCells) + move_position[1]
-                    reward, done = board.play_move(self.player_char, move_position)
-                    self.update_Q_table(board, (move_position[0]*board.nbrCells) + move_position[1], reward, previous_state)
-                    return reward, done, (move_position[0]*board.nbrCells) + move_position[1]
+                    move_position = random.randint(0, 8)
+                    self.latest_action = move_position
+                    row = int(move_position / 3)
+                    column = move_position % 3
+                    reward, done = board.play_move(self.player_char, (row, column))
+                    self.update_Q_table(board, move_position, reward, previous_state)
+                    return reward, done, move_position
 
             if self.epsilon > self.min_epsilon:
                 self.epsilon -= self.reduction
